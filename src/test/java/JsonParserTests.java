@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import parser.JsonParser;
@@ -95,16 +96,22 @@ public class JsonParserTests {
     class readFromFileTests {
 
         @ParameterizedTest
-        @CsvSource({"src/test/resources/andrew-cart.json, Audi, 32026.9", "src/main/resources/eugen-cart.json, BMW, 22103.9"})
-        void readFromFilePositive(String path, String name, double price) {
-            realItem = new RealItem();
-            virtualItem = new VirtualItem();
-            Cart cart = jsonParser.readFromFile(new File(path));
+        @CsvSource({"src/test/resources/andrew-cart.json, igor-cart, andrew-cart, 38445.479999999996", "src/main/resources/eugen-cart.json, igor-cart, eugen-cart, 26560.68"})
+        void readFromFilePositive(String path, String initCartName, String cartName, double totalPrice) {
+            cart = new Cart(initCartName);
+            String firstCartName = cart.getCartName();
+            double firsTotalPrice = cart.getTotalPrice();
+
+            cart = jsonParser.readFromFile(new File(path));
 
 
-            cart.addRealItem(realItem);
+            Assertions.assertAll(
+                    () -> Assertions.assertNotEquals(firstCartName, cart.getCartName()),
+                    () -> Assertions.assertEquals(cartName, cart.getCartName()),
 
-
+                    () -> Assertions.assertNotEquals(firsTotalPrice, cart.getTotalPrice()),
+                    () -> Assertions.assertEquals(totalPrice, cart.getTotalPrice())
+            );
 
         }
 
@@ -128,4 +135,6 @@ public class JsonParserTests {
             return false;
         }
     }
+
+
 }
