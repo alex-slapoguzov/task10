@@ -1,13 +1,10 @@
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import parser.JsonParser;
 import parser.Parser;
 import shop.Cart;
-import shop.RealItem;
-import shop.VirtualItem;
 
 
 import java.io.File;
@@ -19,23 +16,10 @@ public class JsonParserTests {
     private Parser jsonParser;
     private Cart cart;
 
-    private RealItem realItem;
-    private VirtualItem virtualItem;
-
 
     @BeforeEach
     void setUp() {
         jsonParser = new JsonParser();
-     /*   car = new RealItem();
-        license = new VirtualItem();
-
-        car.setName("Nissan");
-        car.setPrice(25300);
-        car.setWeight(1720);
-
-        license.setName("License");
-        license.setPrice(50);
-        license.setSizeOnDisk(150);*/
     }
 
     @AfterEach
@@ -76,14 +60,13 @@ public class JsonParserTests {
             Assertions.assertFalse(isFilePresent(fileName), "File is created!");
         }
 
-
+        @Disabled
         @ParameterizedTest
         @ValueSource(strings = {"alexey-cart", "111BBvv6", "!@#$%^&"})
         void writeToFileNotEmptyFilePositive(String cartName) {
             String fileName = cartName + ".json";
             cart = new Cart(cartName);
-           /* igorCart.addRealItem(car);
-            igorCart.addVirtualItem(license);*/
+
             jsonParser.writeToFile(cart);
 
             Assertions.assertTrue(isFileNotEmpty(fileName), "File is empty!");
@@ -114,7 +97,15 @@ public class JsonParserTests {
             );
 
         }
+    }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"src/test/resources/text.csv", "src/main/resources/andrew-cart.jso", "eugen-cart", "src/test/resources/map.txt", "src/main/resources/eugen-cart"})
+    void readFromFileIncorrectTypeExceptionTests(String fileName) {
+        File file = new File(fileName);
+        Throwable throwable = Assertions.assertThrows(parser.NoSuchFileException.class, () ->
+                jsonParser.readFromFile(file));
+        Assertions.assertEquals(throwable.getMessage(), String.format("File %s.json not found!", file));
     }
 
 

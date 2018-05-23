@@ -1,5 +1,4 @@
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -19,7 +18,7 @@ public class CartTests {
     private VirtualItem virtualItem;
     private Parser parser;
 
-    @Disabled
+
     @ParameterizedTest
     @CsvSource({"src\\test\\resources\\andrew-cart.json, 38445.48", "src\\test\\resources\\eugen-cart.json, 26560.68"})
     void getTotalPriceWithParserClassPositiveTest(String pathName, double totalPrice) {
